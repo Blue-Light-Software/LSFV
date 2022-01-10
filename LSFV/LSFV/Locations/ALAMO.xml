@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Alamo Sea -->
+<ALAMO>
+  <Name>Alamo Sea</Name>
+  <Size>Large</Size>
+  <Type>Water</Type>
+  <Class>Working</Class>
+  <Population>None</Population>
+  <County>Blaine</County>
+</ALAMO>

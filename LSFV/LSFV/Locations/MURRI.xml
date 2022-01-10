@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Murrieta_Heights -->
+<MURRI>
+  <Name>Murrieta Heights</Name>
+  <Size>Medium</Size>
+  <Type>Residential</Type>
+  <Class>Working</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</MURRI>

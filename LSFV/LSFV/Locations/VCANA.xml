@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Vespucci_Canals -->
+<VCANA>
+  <Name>Vespucci Canals</Name>
+  <Size>Medium</Size>
+  <Type>Residential</Type>
+  <Class>UpperMiddle</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</VCANA>

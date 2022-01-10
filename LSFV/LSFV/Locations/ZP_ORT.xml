@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Port of South Los Santos -->
+<ZP_ORT>
+  <Name>Port of South Los Santos</Name>
+  <Size>Large</Size>
+  <Type>Industrial</Type>
+  <Class>Working</Class>
+  <Population>None</Population>
+  <County>LosSantos</County>
+</ZP_ORT>

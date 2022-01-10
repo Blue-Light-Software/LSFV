@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Mirror_Park -->
+<MIRR>
+  <Name>Mirror Park</Name>
+  <Size>Medium</Size>
+  <Type>Residential</Type>
+  <Class>LowerMiddle</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</MIRR>

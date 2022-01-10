@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Downtown_Los_Santos_(HD_Universe) -->
+<DOWNT>
+  <Name>Downtown Los Santos</Name>
+  <Size>VerySmall</Size>
+  <Type>Office</Type>
+  <Class>Working</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</DOWNT>

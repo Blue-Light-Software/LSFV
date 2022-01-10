@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vinewood -->
+<VINE>
+  <Name>Vinewood</Name>
+  <Size>Large</Size>
+  <Type>Residential, Commercial</Type>
+  <Class>LowerMiddle</Class>
+  <Population>None</Population>
+  <County>LosSantos</County>
+</VINE>

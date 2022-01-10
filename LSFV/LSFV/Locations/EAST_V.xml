@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/East_Vinewood -->
+<EAST_V>
+  <Name>East Vinewood</Name>
+  <Size>Medium</Size>
+  <Type>Commercial, Residential</Type>
+  <Class>LowerMiddle</Class>
+  <Population>Moderate</Population>
+  <County>LosSantos</County>
+</EAST_V>

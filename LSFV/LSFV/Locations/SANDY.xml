@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Reference: https://gta.fandom.com/wiki/Sandy_Shores
+  Sandy Shores does not have many house numbers, so many addresses only have street names!
+-->
+<SANDY>
+  <Name>Sandy Shores</Name>
+  <Size>Large</Size>
+  <Type>Residential, Commercial</Type>
+  <Class>Lower</Class>
+  <Population>Moderate</Population>
+  <County>Blaine</County>
+</SANDY>

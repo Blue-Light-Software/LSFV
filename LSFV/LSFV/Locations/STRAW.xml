@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Strawberry -->
+<STRAW>
+  <Name>Strawberry</Name>
+  <Size>Medium</Size>
+  <Type>Commercial, Residential</Type>
+  <Class>Working</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</STRAW>

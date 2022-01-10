@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Morningwood -->
+<MORN>
+  <Name>Morningwood</Name>
+  <Size>VerySmall</Size>
+  <Type>Residential, Commercial</Type>
+  <Class>Upper</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</MORN>

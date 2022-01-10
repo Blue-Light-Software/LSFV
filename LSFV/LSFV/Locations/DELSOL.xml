@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Puerto_Del_Sol -->
+<DELSOL>
+  <Name>Puerto Del Sol</Name>
+  <Size>Small</Size>
+  <Type>Residential</Type>
+  <Class>Upper</Class>
+  <Population>Moderate</Population>
+  <County>LosSantos</County>
+</DELSOL>

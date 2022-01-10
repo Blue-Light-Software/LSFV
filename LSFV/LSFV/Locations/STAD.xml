@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Maze_Bank_Arena -->
+<STAD>
+  <Name>Maze Bank Arena</Name>
+  <Size>VerySmall</Size>
+  <Type>Recreation</Type>
+  <Class>LowerMiddle</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</STAD>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Chumash -->
+<CHU>
+  <Name>Chumash</Name>
+  <Size>Small</Size>
+  <Type>Residential, Commercial</Type>
+  <Class>UpperMiddle</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</CHU>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- San Andreas -->
+<SanAnd>
+  <Name>San Andreas</Name>
+  <Size>Large</Size>
+  <Type>Residential, Commercial, Highway</Type>
+  <Class>Working</Class>
+  <Population>None</Population>
+  <County>LosSantos</County>
+</SanAnd>

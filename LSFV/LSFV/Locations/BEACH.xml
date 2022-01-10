@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Vespucci_Beach -->
+<BEACH>
+  <Name>Vespucci Beach</Name>
+  <Size>Medium</Size>
+  <Type>Recreation</Type>
+  <Class>Working</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</BEACH>

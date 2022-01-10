@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Highway Patrol SideOfRoad locations -->
+<HIGHWAY>
+  <Name>Highway</Name>
+  <Size>Massive</Size>
+  <Type>Highway</Type>
+  <Class>Working</Class>
+  <Population>Moderate</Population>
+  <County>LosSantos</County>
+</HIGHWAY>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Paleto_Bay -->
+<PALETO>
+  <Name>Paleto Bay</Name>
+  <Size>Large</Size>
+  <Type>Residential, Commercial</Type>
+  <Class>Working</Class>
+  <Population>Dense</Population>
+  <CrimeLevel>Moderate</CrimeLevel>
+  <County>Blaine</County>
+</PALETO>

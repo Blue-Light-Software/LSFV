@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Downtown_Vinewood -->
+<DTVINE>
+  <Name>Downtown Vinewood</Name>
+  <Size>Medium</Size>
+  <Type>Commercial</Type>
+  <Class>LowerMiddle</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</DTVINE>

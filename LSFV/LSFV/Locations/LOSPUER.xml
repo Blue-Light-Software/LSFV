@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/La_Puerta -->
+<LOSPUER>
+  <Name>La Puerta</Name>
+  <Size>Medium</Size>
+  <Type>Industrial</Type>
+  <Class>Working</Class>
+  <Population>Moderate</Population>
+  <County>LosSantos</County>
+</LOSPUER>

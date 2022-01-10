@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Vinewood_Racetrack -->
+<HORS>
+  <Name>Vinewood Racetrack</Name>
+  <Size>Small</Size>
+  <Type>Commercial, Recreation</Type>
+  <Class>UpperMiddle</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</HORS>

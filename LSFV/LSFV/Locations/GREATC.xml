@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Great_Chaparral -->
+<GREATC>
+  <Name>Great Chaparral</Name>
+  <Size>Large</Size>
+  <Type>Rural</Type>
+  <Class>Lower</Class>
+  <Population>Scarce</Population>
+  <County>LosSantos</County>
+</GREATC>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://gta.fandom.com/wiki/Hawick -->
+<HAWICK>
+  <Name>Hawick</Name>
+  <Size>Small</Size>
+  <Type>Residential, Commercial</Type>
+  <Class>LowerMiddle</Class>
+  <Population>Dense</Population>
+  <County>LosSantos</County>
+</HAWICK>
