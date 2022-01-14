@@ -40,19 +40,27 @@ namespace LSFV.NativeUI
 
         private UIMenu MainUIMenu;
         private UIMenu LocationsUIMenu;
-
+        private UIMenuItem RoadsButton;
         private UIMenu RoadUIMenu;
         private UIMenu IntersectionUIMenu;
         private UIMenu AddIntersectionUIMenu;
         private UIMenu IntersectionFlagsUIMenu;
+        private UIMenu IntersectionConnectUIMenu;
         private UIMenuItem IntersectionCreateButton;
         private UIMenuItem IntersectionEditButton;
         private UIMenuItem IntersectionDeleteButton;
         private UIMenuItem IntersectionLoadBlipsButton;
         private UIMenuItem IntersectionClearBlipsButton;
         private UIMenu AddRoadUIMenu;
+        private UIMenu RoadRecordUIMenu;
+        private UIMenu EditRoadUIMenu;
+        private UIMenu RoadFlagsUIMenu;
         private UIMenu RoadNodesUIMenu;
-
+        private UIMenuItem RoadCreateButton;
+        private UIMenuItem RoadEditButton;
+        private UIMenuItem RoadDeleteButton;
+        private UIMenuItem RoadLoadBlipsButton;
+        private UIMenuItem RoadClearBlipsButton;
         private UIMenu RoadShoulderFlagsUIMenu;
         private UIMenu RoadShoulderBeforeFlagsUIMenu;
         private UIMenu RoadShoulderAfterFlagsUIMenu;
@@ -167,6 +175,9 @@ namespace LSFV.NativeUI
             TeleportMenuButton.Activated += TeleportMenuButton_Activated;
             CloseMenuButton.Activated += (s, e) => MainUIMenu.Visible = false;
 
+            // Buid roads menu
+            BuildRoadsMenu();
+
             // Create RoadShoulders Menu
             BuildRoadShouldersMenu();
 
@@ -189,6 +200,11 @@ namespace LSFV.NativeUI
                 LocationsUIMenu,
                 AddRoadUIMenu,
                 RoadUIMenu,
+                RoadFlagsUIMenu,
+                RoadRecordUIMenu,
+                RoadNodesUIMenu,
+                RoadShoulderUIMenu,
+                AddRoadShoulderUIMenu,
                 RoadShoulderFlagsUIMenu,
                 RoadShoulderBeforeFlagsUIMenu,
                 RoadShoulderAfterFlagsUIMenu,
@@ -199,7 +215,8 @@ namespace LSFV.NativeUI
                 ResidenceSpawnPointsUIMenu,
                 IntersectionUIMenu,
                 AddIntersectionUIMenu,
-                IntersectionFlagsUIMenu
+                IntersectionFlagsUIMenu,
+                IntersectionConnectUIMenu
             };
 
             // Refresh indexes
@@ -221,17 +238,20 @@ namespace LSFV.NativeUI
             };
 
             // Setup Buttons
+            RoadsButton = new UIMenuItem("Road Segments", "Manage road segment locations");
             RoadShouldersButton = new UIMenuItem("Road Shoulders", "Manage road shoulder locations");
             ResidenceButton = new UIMenuItem("Residences", "Manage residence locations");
             IntersectionButton = new UIMenuItem("Intersections", "Manage intersection locations");
 
             // Add buttons
+            LocationsUIMenu.AddItem(RoadsButton);
             LocationsUIMenu.AddItem(RoadShouldersButton);
             LocationsUIMenu.AddItem(ResidenceButton);
             LocationsUIMenu.AddItem(IntersectionButton);
 
             // Bind buttons
-            LocationsUIMenu.BindMenuToItem(RoadUIMenu, RoadShouldersButton);
+            LocationsUIMenu.BindMenuToItem(RoadUIMenu, RoadsButton);
+            LocationsUIMenu.BindMenuToItem(RoadShoulderUIMenu, RoadShouldersButton);
             LocationsUIMenu.BindMenuToItem(ResidenceUIMenu, ResidenceButton);
             LocationsUIMenu.BindMenuToItem(IntersectionUIMenu, IntersectionButton);
         }
@@ -444,20 +464,44 @@ namespace LSFV.NativeUI
             foreach (T location in items)
             {
                 // Create the checkpoint in the game world
-                var vector = location.Position;
-                var checkpoint = Checkpoint.Create(vector, color, forceGround: true);
-                var blip = new Blip(vector) { Color = color };
-
-                // Tag the location so we can edit it later
-                checkpoint.Tag = location;
-
-                // Add checkpoint and blip to a collection to keep tabs on it
-                ZoneCheckpoints.Add(checkpoint, blip);
+                CreateCheckpoint(location.Position, color, 47, location);
             }
 
             // Flag
             ShowingZoneLocations = true;
             return true;
+        }
+
+        /// <summary>
+        /// Creates a checkpoint and blip using the following parameter data
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="color"></param>
+        /// <param name="type"></param>
+        /// <param name="location"></param>
+        private void CreateCheckpoint(Vector3 vector, Color color, int type = 47, object location = null)
+        {
+            CreateCheckpoint(vector, Vector3.Zero, color, type, location);
+        }
+
+        /// <summary>
+        /// Creates a checkpoint and blip using the following parameter data
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="color"></param>
+        /// <param name="type"></param>
+        /// <param name="location"></param>
+        private void CreateCheckpoint(Vector3 vector, Vector3 point, Color color, int type, object location = null)
+        {
+            // Create the checkpoint in the game world
+            var checkpoint = Checkpoint.Create(vector, point, color, type: type, forceGround: true);
+            var blip = new Blip(vector) { Color = color };
+
+            // Tag the location so we can edit it later
+            checkpoint.Tag = location;
+
+            // Add checkpoint and blip to a collection to keep tabs on it
+            ZoneCheckpoints.Add(checkpoint, blip);
         }
 
         /// <summary>
@@ -525,6 +569,12 @@ namespace LSFV.NativeUI
             IntersectionCreateButton.Enabled = true;
             IntersectionEditButton.Enabled = false;
             IntersectionDeleteButton.Enabled = false;
+
+            // Road Segments
+            RoadCreateButton.Enabled = true;
+            RoadContinueButton.Enabled = false;
+            RoadEditButton.Enabled = false;
+            RoadDeleteButton.Enabled = false;
         }
 
         private Ped GetPlayer()
@@ -586,14 +636,8 @@ namespace LSFV.NativeUI
                 // Is a menu open, but not in an editing or creating window
                 if (isAnyOpen && Status == LocationUIStatus.None)
                 {
-                    // Check if close to a checkpoint
-                    var playerPos = Game.LocalPlayer.Character.Position;
-                    var closestPoint = (
-                        from x in ZoneCheckpoints
-                        where x.Key.Position.DistanceTo(playerPos) < 7f
-                        select x.Key).FirstOrDefault();
-
                     // Allow editing of the closest point
+                    Checkpoint closestPoint = GetClosestCheckPoint();
                     if (closestPoint != null)
                     {
                         // Did our closest location change?
@@ -630,6 +674,13 @@ namespace LSFV.NativeUI
                                     IntersectionEditButton.Enabled = true;
                                     IntersectionDeleteButton.Enabled = true;
                                     break;
+                                case LocationTypeCode.RoadSegment:
+                                    bool continuing = closestPoint.CheckpointType == ROAD_END;
+                                    RoadCreateButton.Enabled = false;
+                                    RoadContinueButton.Enabled = continuing;
+                                    RoadEditButton.Enabled = !continuing;
+                                    RoadDeleteButton.Enabled = true;
+                                    break;
                             }
                         }
                     }
@@ -644,6 +695,46 @@ namespace LSFV.NativeUI
             {
                 DisableAllEditButtons();
             }
+        }
+
+        /// <summary>
+        /// Gets the closest loaded checkpoint
+        /// </summary>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        private Checkpoint GetClosestCheckPoint(float distance = 6f)
+        {
+            var playerPos = Game.LocalPlayer.Character.Position;
+            return (from x in ZoneCheckpoints
+                    let playerDist = x.Key.Position.DistanceTo(playerPos)
+                    where playerDist <= distance
+                    orderby distance
+                    select x.Key
+                ).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Replaces a <see cref="Checkpoint"/> on the map
+        /// </summary>
+        private void ReplaceCheckPointAtLocation(Checkpoint original, Color color, int type)
+        {
+            var vector = original.Position;
+            var points = original.PointingTo;
+            var location = original.Tag as WorldLocation;
+
+            // Create the checkpoint in the game world
+            var checkpoint = Checkpoint.Create(vector, points, color, type: type, forceGround: true);
+            var blip = ZoneCheckpoints[original];
+            blip.Color = color;
+
+            // Tag the location so we can edit it later
+            checkpoint.Tag = location;
+
+            // Delete the old
+            DeleteBlipAndCheckpoint(original);
+
+            // Add checkpoint and blip to a collection to keep tabs on it
+            ZoneCheckpoints.Add(checkpoint, blip);
         }
     }
 }

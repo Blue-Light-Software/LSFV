@@ -32,9 +32,34 @@ namespace LSFV
         public static ILiteCollection<Intersection> Intersections { get; private set; }
 
         /// <summary>
+        /// A queryable collection of Interconnection documents
+        /// </summary>
+        public static ILiteCollection<Interconnection> Interconnections { get; private set; }
+
+        /// <summary>
+        /// A queryable collection of Road documents
+        /// </summary>
+        public static ILiteCollection<Road> Roads { get; private set; }
+
+        /// <summary>
+        /// A queryable collection of RoadNode documents
+        /// </summary>
+        public static ILiteCollection<RoadNode> RoadNodes { get; private set; }
+
+        /// <summary>
+        /// A queryable collection of RoadSegement documents
+        /// </summary>
+        public static ILiteCollection<RoadSegment> RoadSegments { get; private set; }
+
+        /// <summary>
         /// A queryable collection of RoadShoulder documents
         /// </summary>
         public static ILiteCollection<RoadShoulder> RoadShoulders { get; private set; }
+
+        /// <summary>
+        /// A queryable collection of RoadJunction documents
+        /// </summary>
+        public static ILiteCollection<RoadJunction> RoadJunctions { get; private set; }
 
         /// <summary>
         /// A queryable collection of Residence documents
@@ -50,6 +75,9 @@ namespace LSFV
             if (Initialized) return;
             Initialized = true;
 
+            // Store enums as integers to save space
+            BsonMapper.Global.EnumAsInteger = true;
+
             // Create connection string to our database
             var filePath = Path.Combine(EntryPoint.FrameworkFolderPath, "LocationData.db");
             var connectionString = $"Filename={filePath}";
@@ -59,65 +87,87 @@ namespace LSFV
             Database = new LiteDatabase(connectionString);
             Log.Debug("Created LiteDatabase Connection");
 
+            //=== 
             // Ensure worldzones exist
             WorldZones = Database.GetCollection<WorldZone>("WorldZones", BsonAutoId.Int32);
-            var recordCount = WorldZones.Count();
-            if (recordCount == 0)
-            {
-                Log.Debug("Created WorldZone Collection");
-            }
-            else
-            {
-                Log.Debug($"Loaded existing WorldZone Collection with {recordCount} documents");
-            }
+            LogRecordCount(WorldZones);
 
             // Create index
             WorldZones.EnsureIndex(x => x.ScriptName, true);
             Log.Debug("Ensured Index on WorldZones");
 
-            // Ensure Intersections Exist
-            Intersections = Database.GetCollection<Intersection>("Intersections", BsonAutoId.Int32);
-            recordCount = Intersections.Count();
-            if (recordCount == 0)
-            {
-                Log.Debug("Created Intersections Collection");
-            }
-            else
-            {
-                Log.Debug($"Loaded existing Intersections Collection with {recordCount} documents");
-            }
+            //=== 
+            // Ensure roads exist
+            Roads = Database.GetCollection<Road>("Roads", BsonAutoId.Int32);
+            LogRecordCount(Roads);
 
             // Create index
-            Intersections.EnsureIndex(x => x.Zone.Id);
-            Log.Debug("Ensured Index on Intersections");
+            Roads.EnsureIndex(x => x.Name, true);
+            Log.Debug("Ensured Index on Roads");
 
+            //=== 
+            // Ensure road segments exist
+            RoadSegments = Database.GetCollection<RoadSegment>("RoadSegments", BsonAutoId.Int32);
+            LogRecordCount(RoadSegments);
+
+            // Create index
+            RoadSegments.EnsureIndex(x => x.Road.Id);
+            RoadSegments.EnsureIndex(x => x.Zone.Id);
+            Log.Debug("Ensured Indexes on Roads");
+
+            //=== 
+            // Ensure road nodes exist
+            RoadNodes = Database.GetCollection<RoadNode>("RoadNodes", BsonAutoId.Int32);
+            LogRecordCount(RoadNodes);
+
+            // Create index
+            RoadNodes.EnsureIndex(x => x.RoadSegment.Id);
+            RoadNodes.EnsureIndex(x => x.Zone.Id);
+            Log.Debug("Ensured Indexes on RoadNodes");
+
+            //=== 
             // Ensure RoadShoulders Exist
             RoadShoulders = Database.GetCollection<RoadShoulder>("RoadShoulders", BsonAutoId.Int32);
-            recordCount = RoadShoulders.Count();
-            if (recordCount == 0)
-            {
-                Log.Debug("Created RoadShoulders Collection");
-            }
-            else
-            {
-                Log.Debug($"Loaded existing RoadShoulders Collection with {recordCount} documents");
-            }
+            LogRecordCount(RoadShoulders);
 
             // Create index
             RoadShoulders.EnsureIndex(x => x.Zone.Id);
             Log.Debug("Ensured Index on RoadShoulders");
 
-            // Ensure RoadShoulders Exist
+            //=== 
+            // Ensure Intersections Exist
+            Intersections = Database.GetCollection<Intersection>("Intersections", BsonAutoId.Int32);
+            LogRecordCount(Intersections);
+
+            // Create index
+            Intersections.EnsureIndex(x => x.Zone.Id);
+            Log.Debug("Ensured Index on Intersections");
+
+            //=== 
+            // Ensure road junctions exist
+            RoadJunctions = Database.GetCollection<RoadJunction>("RoadJunctions", BsonAutoId.Int32);
+            LogRecordCount(RoadJunctions);
+
+            // Create index
+            RoadJunctions.EnsureIndex(x => x.EndingSegment.Id);
+            RoadJunctions.EnsureIndex(x => x.StartingSegment.Id);
+            Log.Debug("Ensured Index on RoadJunctions");
+
+            //=== 
+            // Ensure road junctions exist
+            Interconnections = Database.GetCollection<Interconnection>("Interconnections", BsonAutoId.Int32);
+            LogRecordCount(Interconnections);
+
+            // Create index
+            Interconnections.EnsureIndex(x => x.Zone.Id);
+            Interconnections.EnsureIndex(x => x.RoadSegment.Id);
+            Interconnections.EnsureIndex(x => x.Intersection.Id);
+            Log.Debug("Ensured Indexes on Interconnections");
+
+            //=== 
+            // Ensure Residences Exist
             Residences = Database.GetCollection<Residence>("Residences", BsonAutoId.Int32);
-            recordCount = Residences.Count();
-            if (recordCount == 0)
-            {
-                Log.Debug("Created Residences Collection");
-            }
-            else
-            {
-                Log.Debug($"Loaded existing Residences Collection with {recordCount} documents");
-            }
+            LogRecordCount(Residences);
 
             // Create index
             Residences.EnsureIndex(x => x.Zone.Id);
@@ -143,6 +193,20 @@ namespace LSFV
             if (WorldZones.Count() == 0)
             {
                 InsertDefaultZoneData();
+            }
+        }
+
+        private static void LogRecordCount<T>(ILiteCollection<T> collection)
+        {
+            var name = typeof(T).Name;
+            var recordCount = collection.Count();
+            if (recordCount == 0)
+            {
+                Log.Debug($"Created {name} Collection");
+            }
+            else
+            {
+                Log.Debug($"Loaded existing {name} Collection with {recordCount} documents");
             }
         }
 

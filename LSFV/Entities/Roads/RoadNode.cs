@@ -53,6 +53,16 @@ namespace LSFV
         /// 
         /// </summary>
         [BsonIgnore]
+        public override string Hint
+        {
+            get => base.Hint;
+            set => base.Hint = value;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [BsonIgnore]
         public override LocationTypeCode LocationType => LocationTypeCode.RoadNode;
 
         /// <summary>

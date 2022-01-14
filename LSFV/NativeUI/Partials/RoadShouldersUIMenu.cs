@@ -17,11 +17,14 @@ namespace LSFV.NativeUI
     /// </summary>
     internal partial class DeveloperPluginMenu
     {
+        private UIMenu RoadShoulderUIMenu;
+        private UIMenu AddRoadShoulderUIMenu;
+
         #region Properties
 
         private SpawnPoint RoadShoulderLocation { get; set; }
 
-        private Dictionary<RoadFlags, UIMenuCheckboxItem> RoadShouldFlagsItems { get; set; }
+        private Dictionary<RoadFlags, UIMenuCheckboxItem> RoadShoulderFlagsItems { get; set; }
 
         private Dictionary<RoadShoulderPosition, UIMenuItem<SpawnPoint>> RoadShoulderSpawnPointItems { get; set; }
 
@@ -73,7 +76,7 @@ namespace LSFV.NativeUI
         private void BuildRoadShouldersMenu()
         {
             // Create road shoulder ui menu
-            RoadUIMenu = new UIMenu(MENU_NAME, "~b~Road Shoulder Menu")
+            RoadShoulderUIMenu = new UIMenu(MENU_NAME, "~b~Road Shoulder Menu")
             {
                 MouseControlsEnabled = false,
                 AllowCameraMovement = true,
@@ -81,7 +84,7 @@ namespace LSFV.NativeUI
             };
 
             // Create road shoulder ui menu
-            AddRoadUIMenu = new UIMenu(MENU_NAME, "~b~Add Road Shoulder")
+            AddRoadShoulderUIMenu = new UIMenu(MENU_NAME, "~b~Add Road Shoulder")
             {
                 MouseControlsEnabled = false,
                 AllowCameraMovement = true,
@@ -140,15 +143,15 @@ namespace LSFV.NativeUI
             };
 
             // Add buttons
-            RoadUIMenu.AddItem(RoadShoulderCreateButton);
-            RoadUIMenu.AddItem(RoadShoulderEditButton);
-            RoadUIMenu.AddItem(RoadShoulderDeleteButton);
-            RoadUIMenu.AddItem(RoadShoulderLoadBlipsButton);
-            RoadUIMenu.AddItem(RoadShoulderClearBlipsButton);
+            RoadShoulderUIMenu.AddItem(RoadShoulderCreateButton);
+            RoadShoulderUIMenu.AddItem(RoadShoulderEditButton);
+            RoadShoulderUIMenu.AddItem(RoadShoulderDeleteButton);
+            RoadShoulderUIMenu.AddItem(RoadShoulderLoadBlipsButton);
+            RoadShoulderUIMenu.AddItem(RoadShoulderClearBlipsButton);
 
             // Bind Buttons
-            RoadUIMenu.BindMenuToItem(AddRoadUIMenu, RoadShoulderCreateButton);
-            RoadUIMenu.BindMenuToItem(AddRoadUIMenu, RoadShoulderEditButton);
+            RoadShoulderUIMenu.BindMenuToItem(AddRoadShoulderUIMenu, RoadShoulderCreateButton);
+            RoadShoulderUIMenu.BindMenuToItem(AddRoadShoulderUIMenu, RoadShoulderEditButton);
 
             // *************************************************
             // Add RoadShoulder UI Menu
@@ -169,17 +172,17 @@ namespace LSFV.NativeUI
             RoadShoulderSaveButton.Activated += RoadShoulderSaveButton_Activated;
 
             // Add Buttons
-            AddRoadUIMenu.AddItem(RoadShoulderStreetButton);
-            AddRoadUIMenu.AddItem(RoadShoulderHintButton);
-            AddRoadUIMenu.AddItem(RoadShoulderSpeedButton);
-            AddRoadUIMenu.AddItem(RoadShoulderZoneButton);
-            AddRoadUIMenu.AddItem(RoadShoulderSpawnPointsButton);
-            AddRoadUIMenu.AddItem(RoadShoulderFlagsButton);
-            AddRoadUIMenu.AddItem(RoadShoulderSaveButton);
+            AddRoadShoulderUIMenu.AddItem(RoadShoulderStreetButton);
+            AddRoadShoulderUIMenu.AddItem(RoadShoulderHintButton);
+            AddRoadShoulderUIMenu.AddItem(RoadShoulderSpeedButton);
+            AddRoadShoulderUIMenu.AddItem(RoadShoulderZoneButton);
+            AddRoadShoulderUIMenu.AddItem(RoadShoulderSpawnPointsButton);
+            AddRoadShoulderUIMenu.AddItem(RoadShoulderFlagsButton);
+            AddRoadShoulderUIMenu.AddItem(RoadShoulderSaveButton);
 
             // Bind buttons
-            AddRoadUIMenu.BindMenuToItem(RoadShoulderFlagsUIMenu, RoadShoulderFlagsButton);
-            AddRoadUIMenu.BindMenuToItem(RoadShoulderSpawnPointsUIMenu, RoadShoulderSpawnPointsButton);
+            AddRoadShoulderUIMenu.BindMenuToItem(RoadShoulderFlagsUIMenu, RoadShoulderFlagsButton);
+            AddRoadShoulderUIMenu.BindMenuToItem(RoadShoulderSpawnPointsUIMenu, RoadShoulderSpawnPointsButton);
 
             // *************************************************
             // Intersection Flags
@@ -254,19 +257,19 @@ namespace LSFV.NativeUI
             }
 
             // Add road shoulder flags list
-            RoadShouldFlagsItems = new Dictionary<RoadFlags, UIMenuCheckboxItem>();
+            RoadShoulderFlagsItems = new Dictionary<RoadFlags, UIMenuCheckboxItem>();
             foreach (RoadFlags flag in Enum.GetValues(typeof(RoadFlags)))
             {
                 var name = Enum.GetName(typeof(RoadFlags), flag);
                 var cb = new UIMenuCheckboxItem(name, false, GetRoadFlagDesc(flag));
-                RoadShouldFlagsItems.Add(flag, cb);
+                RoadShoulderFlagsItems.Add(flag, cb);
 
                 // Add button
                 RoadShoulderFlagsUIMenu.AddItem(cb);
             }
 
             // Register for events
-            AddRoadUIMenu.OnMenuChange += AddRoadShoulderUIMenu_OnMenuChange;
+            AddRoadShoulderUIMenu.OnMenuChange += AddRoadShoulderUIMenu_OnMenuChange;
             RoadShoulderFlagsUIMenu.OnMenuChange += RoadShoulderFlagsUIMenu_OnMenuChange;
         }
 
@@ -291,7 +294,7 @@ namespace LSFV.NativeUI
             if (!forward && oldMenu == RoadShoulderFlagsUIMenu)
             {
                 // We must have at least 1 item checked
-                if (RoadShouldFlagsItems.Any(x => x.Value.Checked))
+                if (RoadShoulderFlagsItems.Any(x => x.Value.Checked))
                 {
                     RoadShoulderFlagsButton.RightBadge = UIMenuItem.BadgeStyle.Tick;
                 }
@@ -323,7 +326,7 @@ namespace LSFV.NativeUI
             }
 
             // Update description
-            AddRoadUIMenu.SubtitleText = "Add Road Shoulder";
+            AddRoadShoulderUIMenu.SubtitleText = "Add Road Shoulder";
 
             // Grab player location
             var player = GetPlayer();
@@ -332,7 +335,7 @@ namespace LSFV.NativeUI
             RoadShoulderLocation = new SpawnPoint(cpPos, player.Heading);
 
             // Reset road shoulder flags
-            foreach (var cb in RoadShouldFlagsItems.Values)
+            foreach (var cb in RoadShoulderFlagsItems.Values)
             {
                 cb.Checked = false;
             }
@@ -410,13 +413,13 @@ namespace LSFV.NativeUI
             if (editingItem == null) return;
 
             // Reset road shoulder flags
-            foreach (var item in RoadShouldFlagsItems)
+            foreach (var item in RoadShoulderFlagsItems)
             {
                 item.Value.Checked = editingItem.Flags.Contains(item.Key);
             }
 
             // Are flags complete?
-            if (RoadShouldFlagsItems.Any(x => x.Value.Checked))
+            if (RoadShoulderFlagsItems.Any(x => x.Value.Checked))
             {
                 RoadShoulderFlagsButton.RightBadge = UIMenuItem.BadgeStyle.Tick;
             }
@@ -649,7 +652,7 @@ namespace LSFV.NativeUI
                     SpeedLimit = RoadShoulderSpeedButton.Value,
                     StreetName = RoadShoulderStreetButton.Description,
                     Hint = RoadShoulderHintButton.Description,
-                    Flags = RoadShouldFlagsItems.Where(x => x.Value.Checked).Select(x => x.Key).ToList(),
+                    Flags = RoadShoulderFlagsItems.Where(x => x.Value.Checked).Select(x => x.Key).ToList(),
                     BeforeIntersectionFlags = BeforeIntersectionItems.Where(x => x.Value.Checked).Select(x => x.Key).ToList(),
                     BeforeIntersectionDirection = (RelativeDirection)RoadShoulderBeforeListButton.SelectedValue,
                     AfterIntersectionFlags = AfterIntersectionItems.Where(x => x.Value.Checked).Select(x => x.Key).ToList(),
@@ -699,7 +702,7 @@ namespace LSFV.NativeUI
             }
 
             // Go back
-            AddRoadUIMenu.GoBack();
+            AddRoadShoulderUIMenu.GoBack();
 
             // Are we currently showing checkpoints and blips?
             if (Status == LocationUIStatus.Adding && ShowingZoneLocations)
@@ -725,33 +728,19 @@ namespace LSFV.NativeUI
                 default: return "";
                 case RoadFlags.DirtRoad: return "Describes the location as being along an unpaved road";
                 case RoadFlags.OneWayRoad: return "Describes the location as being along a one way road";
-                case RoadFlags.TwoLaneRoad: return "Describes the location as being along a 2 lane road";
-                case RoadFlags.ThreeLaneRoad: return "Describes the location as being along a 3 lane road";
-                case RoadFlags.ThreeLaneCenterTurnRoad: return "Describes the location as being along a 2 lane road, having a 3rd center turn lane";
-                case RoadFlags.FourLaneRoad: return "Describes the location as being along a 4 lane road";
-                case RoadFlags.FiveLaneRoad: return "Describes the location as being along a 5 lane road";
-                case RoadFlags.FiveLaneCenterTurnRoad: return "Describes the location as being along a 4 lane road, having a 5th center turn lane";
-                case RoadFlags.SixLaneRoad: return "Describes the location as being along a 6 lane road";
-                case RoadFlags.DottedCenterLane: return "Describes a road with a dotted center line, allowing passing on the on coming traffic lane";
+                case RoadFlags.PassingZone: return "Describes a road with a dotted center line, allowing passing on the on coming traffic lane";
                 case RoadFlags.OnInterstate: return "escribes the location as being on the interstate";
-                case RoadFlags.OnInterstateRamp: return "Describes the location as being on an interstate freeway ramp";
+                case RoadFlags.InterstateOnRamp: return "Describes the location as being on an interstate freeway On ramp";
+                case RoadFlags.InterstateOffRamp: return "Describes the location as being on an interstate freeway Off ramp";
                 case RoadFlags.OnBridge: return "Describes the location as being on a bridge";
                 case RoadFlags.InsideTunnel: return "Describes the location as being inside of a tunnel";
                 case RoadFlags.DrivewaysLeft: return "Describes a location as being along a road with driveways on the left side";
                 case RoadFlags.DrivewaysRight: return "Describes a location as being along a road with driveways on the right side";
                 case RoadFlags.BusinessesLeft: return "Describes a location as being along a road with businesses on the left side";
                 case RoadFlags.BusinessesRight: return "Describes a location as being along a road with businesses on the right side";
-                case RoadFlags.FreewayGasStation: return "Describes a location as being a Gas station along the freeway";
-                case RoadFlags.BeforeLightedIntersection: return "Describes the location as being before a lighted intersection";
-                case RoadFlags.AfterLightedIntersection: return "Describes the location as being after a lighted intersection";
-                case RoadFlags.BeforeStopIntersection: return "Describes the location as being before an intersection with Stop/Yield signs on all sides";
-                case RoadFlags.AfterStopIntersection: return "Describes the location as being after an intersection with Stop/Yield signs on all sides";
-                case RoadFlags.BeforeNoStopIntersection: return "Describes the location as being near an intersection with Stop/Yield signs only on the intersecting road (no stop this direction).";
-                case RoadFlags.AfterNoStopIntersection: return "Describes the location as being after an intersection with Stop/Yield signs only on the intersecting road (no stop this direction).";
-                case RoadFlags.BeforeInterstateOnRamp: return "Describes the location as being on the side of a interstate freeway just before an on ramp";
-                case RoadFlags.AfterInterstateOnRamp: return "Describes the location as being on the side of a interstate freeway after an on ramp";
-                case RoadFlags.BeforeInterstateOffRamp: return "Describes the location as being on the side of a interstate freeway just before an off ramp";
-                case RoadFlags.AfterInterstateOffRamp: return "Describes the location as being on the side of a interstate freeway after an off ramp";
+                case RoadFlags.HasCenterTurnRoad: return "Describes the location as having a center left turn lane";
+                case RoadFlags.HasRightTurnOnlyLane: return "Describes the location as having a Right turn only lane";
+                case RoadFlags.NoBigVehicles: return "Describes a road that doesn't support large vehicles";
             }
         }
     }

@@ -64,7 +64,7 @@ namespace LSFV
             Log.SetLogLevel(Settings.LogLevel);
 
             // Create internals
-            Finalizer = new StaticFinalizer(Finalize);
+            Finalizer = new StaticFinalizer(DoFinalize);
             CanRun = true;
             RageMenu = new DeveloperPluginMenu();
 
@@ -79,7 +79,7 @@ namespace LSFV
             }
         }
 
-        private static void Finalize()
+        private static void DoFinalize()
         {
             // Stop loop
             CanRun = false;

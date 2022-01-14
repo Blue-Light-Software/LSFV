@@ -36,17 +36,17 @@ namespace LSFV
         /// <summary>
         /// Gets the X value coordinate of this location
         /// </summary>
-        public float X { get; set; }
+        public virtual float X { get; set; }
 
         /// <summary>
         /// Gets the Y value coordinate of this location
         /// </summary>
-        public float Y { get; set; }
+        public virtual float Y { get; set; }
 
         /// <summary>
         /// Gets the Z value coordinate of this location
         /// </summary>
-        public float Z { get; set; }
+        public virtual float Z { get; set; }
 
         /// <summary>
         /// Gets the address to be used in the CAD

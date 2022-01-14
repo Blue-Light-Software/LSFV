@@ -75,7 +75,7 @@ namespace LSFV
             Population = population;
             Size = size;
             SocialClass = socialClass;
-            Flags = flags.Select(x => (ZoneFlags)Enum.Parse(typeof(ZoneFlags), x.AsString)).ToList();
+            Flags = flags.Select(x => (ZoneFlags)x.AsInt32).ToList();
 
             // Add to cache if not existing already
             if (!ZoneCache.ContainsKey(scriptName))

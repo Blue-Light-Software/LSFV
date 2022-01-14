@@ -55,20 +55,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Roads\Enums\InterconnectionFlags.cs" />
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="Enums\County.cs" />
-    <Compile Include="Enums\IntersectionFlags.cs" />
-    <Compile Include="Enums\LocationTypeCode.cs" />
-    <Compile Include="Enums\Population.cs" />
-    <Compile Include="Enums\RelativeDirection.cs" />
-    <Compile Include="Enums\ResidenceFlags.cs" />
-    <Compile Include="Enums\ResidencePosition.cs" />
-    <Compile Include="Enums\RoadFlags.cs" />
-    <Compile Include="Enums\RoadNodeFlags.cs" />
-    <Compile Include="Enums\RoadShoulderPosition.cs" />
-    <Compile Include="Enums\SocialClass.cs" />
-    <Compile Include="Enums\ZoneFlags.cs" />
-    <Compile Include="Enums\ZoneSize.cs" />
+    <Compile Include="Entities\Enums\County.cs" />
+    <Compile Include="Entities\Roads\Enums\IntersectionFlags.cs" />
+    <Compile Include="Entities\Enums\LocationTypeCode.cs" />
+    <Compile Include="Entities\Enums\Population.cs" />
+    <Compile Include="Entities\Enums\RelativeDirection.cs" />
+    <Compile Include="Entities\Buildings\Enums\ResidenceFlags.cs" />
+    <Compile Include="Entities\Buildings\Enums\ResidencePosition.cs" />
+    <Compile Include="Entities\Roads\Enums\RoadFlags.cs" />
+    <Compile Include="Entities\Roads\Enums\RoadNodeFlags.cs" />
+    <Compile Include="Entities\Roads\Enums\RoadShoulderPosition.cs" />
+    <Compile Include="Entities\Enums\SocialClass.cs" />
+    <Compile Include="Entities\Enums\ZoneFlags.cs" />
+    <Compile Include="Entities\Enums\ZoneSize.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
@@ -83,7 +84,7 @@
     <Compile Include="NativeUI\UIMenuItem.cs" />
     <Compile Include="NativeUI\Partials\ResidenceUIMenu.cs" />
     <Compile Include="NativeUI\Partials\RoadShouldersUIMenu.cs" />
-    <Compile Include="NativeUI\Partials\RoadUIMenu.cs" />
+    <Compile Include="NativeUI\Partials\RoadSegmentUIMenu.cs" />
     <Compile Include="Postal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -92,20 +93,20 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Requirement.cs" />
-    <Compile Include="Residence.cs" />
-    <Compile Include="Roads\Interconnection.cs" />
-    <Compile Include="Roads\Intersection.cs" />
-    <Compile Include="Roads\Road.cs" />
-    <Compile Include="Roads\RoadJunction.cs" />
-    <Compile Include="Roads\RoadNode.cs" />
-    <Compile Include="Roads\RoadSegment.cs" />
-    <Compile Include="Roads\RoadShoulder.cs" />
+    <Compile Include="Entities\Buildings\Residence.cs" />
+    <Compile Include="Entities\Roads\Interconnection.cs" />
+    <Compile Include="Entities\Roads\Intersection.cs" />
+    <Compile Include="Entities\Roads\Road.cs" />
+    <Compile Include="Entities\Roads\RoadJunction.cs" />
+    <Compile Include="Entities\Roads\RoadNode.cs" />
+    <Compile Include="Entities\Roads\RoadSegment.cs" />
+    <Compile Include="Entities\Roads\RoadShoulder.cs" />
     <Compile Include="SelectionOperator.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="SpawnPoint.cs" />
-    <Compile Include="WorldLocation.cs" />
-    <Compile Include="WorldPosition.cs" />
-    <Compile Include="WorldZone.cs" />
+    <Compile Include="Entities\SpawnPoint.cs" />
+    <Compile Include="Entities\WorldLocation.cs" />
+    <Compile Include="Entities\WorldPosition.cs" />
+    <Compile Include="Entities\WorldZone.cs" />
     <Compile Include="Xml\WorldZoneFile.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -409,6 +410,7 @@
     <Content Include="LSFV\Postals\old-postals.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -416,5 +418,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

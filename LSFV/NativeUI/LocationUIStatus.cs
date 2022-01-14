@@ -12,6 +12,8 @@ namespace LSFV.NativeUI
 
         Adding,
 
+        Continue,
+
         Editing
     }
 }
