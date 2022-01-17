@@ -1,4 +1,5 @@
 ﻿using BlueLightSoftware.Common;
+using BlueLightSoftware.Common.Extensions;
 using BlueLightSoftware.Common.Game;
 using LiteDB;
 using LSFV.Extensions;
@@ -175,6 +176,9 @@ namespace LSFV.NativeUI
             TeleportMenuButton.Activated += TeleportMenuButton_Activated;
             CloseMenuButton.Activated += (s, e) => MainUIMenu.Visible = false;
 
+            // Build sub menu
+            BuildRoadNodeSubMenu();
+
             // Buid roads menu
             BuildRoadsMenu();
 
@@ -203,6 +207,9 @@ namespace LSFV.NativeUI
                 RoadFlagsUIMenu,
                 RoadRecordUIMenu,
                 RoadNodesUIMenu,
+                RoadNodeUIMenu,
+                AddRoadNodeUIMenu,
+                RoadNodeFlagsUIMenu,
                 RoadShoulderUIMenu,
                 AddRoadShoulderUIMenu,
                 RoadShoulderFlagsUIMenu,
@@ -518,7 +525,7 @@ namespace LSFV.NativeUI
                 locationCheckpoint.Delete();
 
                 // Delete paired blip
-                blip.Delete();
+                blip.Remove();
             }
         }
 

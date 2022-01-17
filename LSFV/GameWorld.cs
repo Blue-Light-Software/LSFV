@@ -15,8 +15,8 @@ namespace LSFV
         /// <returns></returns>
         public static WorldZone GetZoneAtLocation(Vector3 position)
         {
-            var name = Natives.GetNameOfZone<string>(position.X, position.Y, position.Z);
-            return WorldZone.GetZoneByName(name);
+            string name = Natives.GetNameOfZone<string>(position.X, position.Y, position.Z);
+            return Locations.WorldZones.FindOne(x => x.ScriptName == name);
         }
 
         /// <summary>

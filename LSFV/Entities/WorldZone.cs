@@ -1,10 +1,8 @@
 ﻿using BlueLightSoftware.Common;
 using LiteDB;
 using LSFV.Extensions;
-using LSFV.Xml;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace LSFV
@@ -14,12 +12,6 @@ namespace LSFV
     /// </summary>
     public class WorldZone
     {
-        /// <summary>
-        /// Contains a hash table of zones
-        /// </summary>
-        /// <remarks>[ ZoneScriptName => ZoneInfo class ]</remarks>
-        private static Dictionary<string, WorldZone> ZoneCache { get; set; } = new Dictionary<string, WorldZone>();
-
         /// <summary>
         /// Gets the average daily crime calls
         /// </summary>
@@ -76,12 +68,6 @@ namespace LSFV
             Size = size;
             SocialClass = socialClass;
             Flags = flags.Select(x => (ZoneFlags)x.AsInt32).ToList();
-
-            // Add to cache if not existing already
-            if (!ZoneCache.ContainsKey(scriptName))
-            {
-                ZoneCache.Add(scriptName, this);
-            }
         }
 
         /// <summary>
@@ -97,12 +83,6 @@ namespace LSFV
             Size = size;
             SocialClass = socialClass;
             Flags = flags;
-
-            // Add to cache if not existing already
-            if (!ZoneCache.ContainsKey(scriptName))
-            {
-                ZoneCache.Add(scriptName, this);
-            }
         }
 
         /// <summary>
@@ -207,120 +187,6 @@ namespace LSFV
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Loads the specified zones from the database and from the Locations.xml into
-        /// memory, caches the instances, and returns the total number of locations.
-        /// </summary>
-        /// <param name="names">An array of zones to load (should be all uppercase)</param>
-        /// <returns>returns the number of locations loaded</returns>
-        /// <param name="loaded">Returns the number of zones that were loaded (not cached yet).</param>
-        public static WorldZone[] GetZonesByName(string[] names, out int loaded, out int totalLocations)
-        {
-            // Create instance of not already!
-            if (ZoneCache == null)
-            {
-                ZoneCache = new Dictionary<string, WorldZone>();
-            }
-
-            // Local return variables
-            totalLocations = 0;
-            int zonesAdded = 0;
-            List<WorldZone> zones = new List<WorldZone>();
-
-            // Cycle through each child node (Zone)
-            foreach (string zoneName in names)
-            {
-                // Create our spawn point collection and store it
-                try
-                {
-                    var dbZone = GetZoneByName(zoneName);
-
-                    // Add zone to return
-                    zones.Add(dbZone);
-
-                    // Up the location counters
-                    totalLocations += dbZone.GetTotalNumberOfLocations();
-                    zonesAdded++;
-                }
-                catch (FormatException e)
-                {
-                    Log.Error($"WorldZone.LoadZones(): Unable to load location data for zone '{zoneName}'. Missing node/attribute '{e.Message}'");
-                    continue;
-                }
-                catch (FileNotFoundException)
-                {
-                    Log.Warning($"WorldZone.LoadZones(): Missing xml file for zone '{zoneName}'");
-                    continue;
-                }
-                catch (Exception fe)
-                {
-                    Log.Exception(fe);
-                    continue;
-                }
-            }
-
-            loaded = zonesAdded;
-            return zones.ToArray();
-        }
-
-        /// <summary>
-        /// Gets a <see cref="WorldZone"/> instance by name from the database and fills its <see cref="CrimeProjection"/> 
-        /// from the XML file.
-        /// </summary>
-        /// <param name="name">The script name of the zone as written in the Locations.xml</param>
-        /// <returns>return a <see cref="WorldZone"/>, or null if the zone has not been loaded yet</returns>
-        /// <exception cref="FileNotFoundException">thrown if the XML file for the zone does not exist"</exception>
-        /// <exception cref="FormatException">thrown in the XML file is missing nodes and/or attributes</exception>
-        public static WorldZone GetZoneByName(string name)
-        {
-            // We dont allow null here...
-            if (String.IsNullOrWhiteSpace(name)) return null;
-
-            // If we have loaded this zone already, skip it
-            if (ZoneCache.ContainsKey(name))
-            {
-                return ZoneCache[name];
-            }
-
-            // Check file exists
-            string path = Path.Combine(EntryPoint.FrameworkFolderPath, "Locations", $"{name}.xml");
-            if (!File.Exists(path))
-            {
-                throw new FileNotFoundException($"WorldZone.LoadZones(): Missing xml file for zone '{name}'");  
-            }
-
-            // Indicates whether the zone exists in the database
-            var needToAdd = false;
-
-            // Grab zone from database
-            var dbZone = Locations.WorldZones.FindOne(x => x.ScriptName.Equals(name));
-            if (dbZone == null)
-            {
-                Log.Warning($"Attempted to fetch zone named '{name}' from database but it did not exist");
-                needToAdd = true;
-            }
-
-            // Load XML document
-            using (var file = new WorldZoneFile(path))
-            {
-                // Parse the XML contents. It is OK to pass null here!
-                file.Parse(dbZone);
-
-                // Do we need to add?
-                if (needToAdd)
-                {
-                    // Insert
-                    dbZone = file.Zone;
-                    var id = Locations.WorldZones.Insert(dbZone);
-
-                    // Set the ID
-                    dbZone.Id = id.AsInt32;
-                }
-
-                return dbZone;
-            }
         }
 
         #region overrides

@@ -72,6 +72,7 @@
     <Compile Include="Entities\Enums\ZoneSize.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\UIMenuExtensions.cs" />
     <Compile Include="Extensions\Vector3Extensions.cs" />
     <Compile Include="FlagFilterGroup.cs" />
     <Compile Include="GameWorld.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="LogLevel.cs" />
     <Compile Include="NativeUI\DeveloperPluginMenu.cs" />
     <Compile Include="NativeUI\Partials\IntersectionUIMenu.cs" />
+    <Compile Include="NativeUI\Partials\RoadNodeUIMenu.cs" />
     <Compile Include="NativeUI\UIMenuItem.cs" />
     <Compile Include="NativeUI\Partials\ResidenceUIMenu.cs" />
     <Compile Include="NativeUI\Partials\RoadShouldersUIMenu.cs" />

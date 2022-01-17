@@ -726,20 +726,22 @@ namespace LSFV.NativeUI
             switch (flag)
             {
                 default: return "";
-                case RoadFlags.DirtRoad: return "Describes the location as being along an unpaved road";
-                case RoadFlags.OneWayRoad: return "Describes the location as being along a one way road";
+                case RoadFlags.DirtRoad: return "Describes a Road as being along an unpaved road";
+                case RoadFlags.OneWayRoad: return "Describes a Road as being along a one way road";
+                case RoadFlags.Alley: return "Describes a Road as being in an alley way";
+                case RoadFlags.SingleLaneRoad: return "Describes a Road as being along a single lane road where the direction of traffic moves in both directions";
                 case RoadFlags.PassingZone: return "Describes a road with a dotted center line, allowing passing on the on coming traffic lane";
-                case RoadFlags.OnInterstate: return "escribes the location as being on the interstate";
-                case RoadFlags.InterstateOnRamp: return "Describes the location as being on an interstate freeway On ramp";
-                case RoadFlags.InterstateOffRamp: return "Describes the location as being on an interstate freeway Off ramp";
-                case RoadFlags.OnBridge: return "Describes the location as being on a bridge";
-                case RoadFlags.InsideTunnel: return "Describes the location as being inside of a tunnel";
-                case RoadFlags.DrivewaysLeft: return "Describes a location as being along a road with driveways on the left side";
-                case RoadFlags.DrivewaysRight: return "Describes a location as being along a road with driveways on the right side";
-                case RoadFlags.BusinessesLeft: return "Describes a location as being along a road with businesses on the left side";
-                case RoadFlags.BusinessesRight: return "Describes a location as being along a road with businesses on the right side";
-                case RoadFlags.HasCenterTurnRoad: return "Describes the location as having a center left turn lane";
-                case RoadFlags.HasRightTurnOnlyLane: return "Describes the location as having a Right turn only lane";
+                case RoadFlags.OnInterstate: return "Describes a Road as being on the interstate";
+                case RoadFlags.InterstateOnRamp: return "Describes a Road as being on an interstate freeway On ramp";
+                case RoadFlags.InterstateOffRamp: return "Describes a Road as being on an interstate freeway Off ramp";
+                case RoadFlags.OnBridge: return "Describes a Road as being on a bridge";
+                case RoadFlags.InsideTunnel: return "Describes a Road as being inside of a tunnel";
+                case RoadFlags.DrivewaysLeft: return "Describes a Road as being along a road with driveways on the left side";
+                case RoadFlags.DrivewaysRight: return "Describes a Road as being along a road with driveways on the right side";
+                case RoadFlags.BusinessesLeft: return "Describes a Road as being along a road with businesses on the left side";
+                case RoadFlags.BusinessesRight: return "Describes a Road as being along a road with businesses on the right side";
+                case RoadFlags.HasCenterTurnRoad: return "Describes a Road as having a center left turn lane";
+                case RoadFlags.HasRightTurnOnlyLane: return "Describes a Road as having a Right turn only lane";
                 case RoadFlags.NoBigVehicles: return "Describes a road that doesn't support large vehicles";
             }
         }

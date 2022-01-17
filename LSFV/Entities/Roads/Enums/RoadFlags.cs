@@ -8,25 +8,33 @@
         /// <summary>
         /// Describes the location as being along an unpaved road
         /// </summary>
-        /// <remarks>Intended location types: RoadShoulder, Residence, Store</remarks>
         DirtRoad,
 
         /// <summary>
-        /// Describes the location as being along a one way road
+        /// Describes the location as being along a single lane road where the direction
+        /// of traffic moves in both directions
         /// </summary>
-        /// <remarks>Intended location types: RoadShoulder, Residence, Store</remarks>
+        SingleLaneRoad,
+
+        /// <summary>
+        /// Describes the location as being along a one way road where the direction
+        /// of traffic only moves in one direction
+        /// </summary>
         OneWayRoad,
+
+        /// <summary>
+        /// Describes the location as being in an alley way
+        /// </summary>
+        Alley,
 
         /// <summary>
         /// Describes the location as having a center left turn lane
         /// </summary>
-        /// <remarks>Intended location types: RoadShoulderResidence, Store</remarks>
         HasCenterTurnRoad,
 
         /// <summary>
         /// Describes the location as having a Right turn only lane
         /// </summary>
-        /// <remarks>Intended location types: RoadShoulderResidence, Store</remarks>
         HasRightTurnOnlyLane,
 
         /// <summary>

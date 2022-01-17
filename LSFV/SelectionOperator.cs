@@ -1,4 +1,4 @@
-﻿namespace LSFV.Extensions
+﻿namespace LSFV
 {
     public enum SelectionOperator
     {

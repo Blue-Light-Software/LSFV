@@ -6,7 +6,7 @@ using System.Linq;
 namespace LSFV
 {
     /// <summary>
-    /// Represents a segment of a road going in a single direction of trafic
+    /// Represents a segment of a road going in a single direction of traffic
     /// </summary>
     /// <remarks>
     /// When to create a new RoadSegment:

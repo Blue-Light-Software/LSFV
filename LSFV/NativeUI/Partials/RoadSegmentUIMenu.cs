@@ -1,5 +1,6 @@
 ﻿using BlueLightSoftware.Common.Game;
 using LiteDB;
+using LSFV.Extensions;
 using Rage;
 using RAGENativeUI;
 using RAGENativeUI.Elements;
@@ -28,12 +29,15 @@ namespace LSFV.NativeUI
         private UIMenuListItem RoadZoneButton;
         private UIMenuItem RoadFlagsButton;
         private UIMenuItem RoadNextButton;
+        private UIMenuItem RoadNodesButton;
+        private UIMenuItem RoadRecordNodesButton;
         private UIMenuItem RoadBreakButton;
         private UIMenuCheckboxItem RoadAutoBreakButton;
-        private UIMenuItem RoadSaveButton;
+        private UIMenuItem RoadEndButton;
         private UIMenuItem RoadConnectButton;
         private UIMenuItem RoadDeleteConnectionsButton;
-
+        private UIMenuItem RoadSaveButton;
+        private List<Checkpoint> HiddenCheckPoints;
         private Dictionary<RoadFlags, UIMenuCheckboxItem> RoadFlagsItems;
         private SpawnPoint LastRoadLocation;
         private Road ActiveRoad;
@@ -139,13 +143,18 @@ namespace LSFV.NativeUI
             // Add/Edit Road Segment UI Menu
             // *************************************************
 
-            // Setup Buttons
+            // Setup ADD NEW Buttons
             RoadSpeedButton = new UIMenuNumericScrollerItem<int>("Speed Limit", "Sets the speed limit of this road", 10, 80, 5);
             RoadLanesButton = new UIMenuNumericScrollerItem<int>("Lane Count", "Sets the number of lanes for this road segment", 1, 6, 1);
             RoadZoneButton = new UIMenuListItem("Zone", "Selects the zone for this location.");
             RoadFlagsButton = new UIMenuItem("Road Flags", "Open the Intersection flags menu.");
-            RoadNextButton = new UIMenuItem("Continue", "Saves the current data for this Road Segment. ");
+            RoadNextButton = new UIMenuItem("Continue", "Saves the current data for this Road Segment.");
+
+            // Edit Buttons only
+            RoadNodesButton = new UIMenuItem("Road Nodes", "Open the Road Nodes menu.");
+            RoadShouldersButton = new UIMenuItem("Road Shoulders", "Open the Road Shoulders menu.");
             RoadDeleteConnectionsButton = new UIMenuItem("Delete Interconnections", "Deletes all intersection connections attached to this Road Segment.");
+            RoadSaveButton = new UIMenuItem("Save", "Saves the changes to this RoadSegment.");
 
             // Set default indexes
             RoadLanesButton.Index = 0;
@@ -160,11 +169,11 @@ namespace LSFV.NativeUI
             AddRoadUIMenu.AddItem(RoadZoneButton);
             AddRoadUIMenu.AddItem(RoadFlagsButton);
             AddRoadUIMenu.AddItem(RoadNextButton);
-            AddRoadUIMenu.AddItem(RoadDeleteConnectionsButton);
 
             // Bind buttons
             AddRoadUIMenu.BindMenuToItem(RoadFlagsUIMenu, RoadFlagsButton);
             AddRoadUIMenu.BindMenuToItem(RoadRecordUIMenu, RoadNextButton);
+            AddRoadUIMenu.BindMenuToItem(RoadNodeUIMenu, RoadNodesButton);
 
             // Add road shoulder flags list
             RoadFlagsItems = new Dictionary<RoadFlags, UIMenuCheckboxItem>();
@@ -184,19 +193,20 @@ namespace LSFV.NativeUI
 
             // Setup buttons
             RoadAutoBreakButton = new UIMenuCheckboxItem("Auto Break", false, "If checked, whenever the zone or streetname is changed, the ~y~Break and Continue~w~ button will auto activate.");
-            RoadSaveButton = new UIMenuItem("End Segment", "Saves the current location to the database.");
+            RoadEndButton = new UIMenuItem("End Segment", "Saves the current location to the database.");
             RoadBreakButton = new UIMenuItem("Break & Continue", "Ends the current Road Segment, and begins a new one connected by a Junction.");
             RoadConnectButton = new UIMenuItem("Connect Segment", "Ends the current Road Segment and connects it to the nearest RoadSegment via a Junction.");
 
             // Button events
-            RoadSaveButton.Activated += RoadSaveButton_Activated;
+            RoadEndButton.Activated += RoadEndButton_Activated;
             RoadBreakButton.Activated += (s, e) => { RoadBreakButton.Enabled = false; ForceBreak = true; };
             RoadDeleteConnectionsButton.Activated += RoadDeleteConnectionsButton_Activated;
+            RoadSaveButton.Activated += RoadSaveButton_Activated;
             RoadConnectButton.Activated += RoadConnectButton_Activated;
 
             // Add Buttons
             RoadRecordUIMenu.AddItem(RoadAutoBreakButton);
-            RoadRecordUIMenu.AddItem(RoadSaveButton);
+            RoadRecordUIMenu.AddItem(RoadEndButton);
             RoadRecordUIMenu.AddItem(RoadBreakButton);
             RoadRecordUIMenu.AddItem(RoadConnectButton);
 
@@ -295,6 +305,18 @@ namespace LSFV.NativeUI
                 cb.Checked = false;
             }
 
+            // Add / Remove relevent buttons
+            var index = AddRoadUIMenu.MenuItems.IndexOf(RoadSaveButton);
+            if (index > 0)
+            {
+                AddRoadUIMenu.RemoveItemAt(index);
+                AddRoadUIMenu.RemoveItem(RoadNodesButton);
+                AddRoadUIMenu.RemoveItem(RoadShouldersButton);
+                AddRoadUIMenu.RemoveItem(RoadDeleteConnectionsButton);
+
+                AddRoadUIMenu.AddItem(RoadNextButton);
+            }
+
             // Add Zones
             RoadZoneButton.Collection.Clear();
             RoadZoneButton.Collection.Add(GameWorld.GetZoneNameAtLocation(pos));
@@ -327,6 +349,13 @@ namespace LSFV.NativeUI
         /// </summary>
         private void RoadEditButton_Activated(UIMenu sender, UIMenuItem selectedItem)
         {
+            // Grab item
+            if (LocationCheckpoint?.Tag == null) return;
+
+            // Ensure tag is set properly
+            var editingItem = LocationCheckpoint.Tag as RoadSegment;
+            if (editingItem == null) return;
+
             // Reset
             ActiveSegment = null;
             LastJunction = null;
@@ -337,12 +366,77 @@ namespace LSFV.NativeUI
             // Enable/Disable buttons
             RoadNextButton.Enabled = false;
             RoadDeleteConnectionsButton.Enabled = true;
+
+            // Add Zones
+            RoadZoneButton.Collection.Clear();
+            RoadZoneButton.Collection.Add(GameWorld.GetZoneNameAtLocation(editingItem.Position));
+            RoadZoneButton.Collection.Add("HIGHWAY");
+            RoadZoneButton.Collection.Add(GameWorld.GetZoneNameAtLocation(editingItem.EndPosition));
+            var index = RoadZoneButton.Collection.IndexOf(editingItem.Zone.ScriptName);
+
+            // Set values for the menu
+            RoadSpeedButton.Value = editingItem.SpeedLimit;
+            RoadLanesButton.Value = editingItem.LaneCount;
+            RoadZoneButton.Index = Math.Abs(index);
+
+            // Reset road flags
+            foreach (var item in RoadFlagsItems)
+            {
+                item.Value.Checked = editingItem.Flags.Contains(item.Key);
+            }
+
+            // Are flags complete?
+            if (RoadFlagsItems.Any(x => x.Value.Checked))
+            {
+                RoadFlagsButton.RightBadge = UIMenuItem.BadgeStyle.Tick;
+            }
+            else
+            {
+                RoadFlagsButton.RightBadge = UIMenuItem.BadgeStyle.None;
+            }
+
+            // Add / Remove relevent buttons
+            index = AddRoadUIMenu.MenuItems.IndexOf(RoadNextButton);
+            if (index > 0)
+            {
+                AddRoadUIMenu.RemoveItemAt(index);
+
+                AddRoadUIMenu.AddItem(RoadNodesButton);
+                AddRoadUIMenu.AddItem(RoadShouldersButton);
+                AddRoadUIMenu.AddItem(RoadDeleteConnectionsButton);
+                AddRoadUIMenu.AddItem(RoadSaveButton);
+            }
+
+            // Cache all loaded locations
+            HiddenCheckPoints = new List<Checkpoint>(ZoneCheckpoints.Count);
+            foreach (var cp in ZoneCheckpoints)
+            {
+                HiddenCheckPoints.Add(cp.Key);
+            }
+
+            // Delete all checkpoints
+            ClearZoneLocations();
+
+            // Add a new start and end point
+            CreateCheckpoint(editingItem.Position, editingItem.EndPosition, Color.Red, ROAD_START, editingItem);
+            CreateCheckpoint(editingItem.EndPosition, Color.Red, ROAD_END, editingItem);
+
+            // Add road nodes
+            RecordEditSegment();
+
+            // Flag
+            Status = LocationUIStatus.Editing;
+        }
+
+        private void RoadSaveButton_Activated(UIMenu sender, UIMenuItem selectedItem)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
         /// Method called when the "Save" menu item is clicked on the Record Road Segment menu.
         /// </summary>
-        private void RoadSaveButton_Activated(UIMenu sender, UIMenuItem selectedItem)
+        private void RoadEndButton_Activated(UIMenu sender, UIMenuItem selectedItem)
         {
             // Ignore 
             if (ActiveSegment == null) return;
@@ -623,7 +717,7 @@ namespace LSFV.NativeUI
             else
             {
                 // Get active zone
-                var zone = WorldZone.GetZoneByName(RoadZoneButton.SelectedItem.DisplayText);
+                var zone = Locations.WorldZones.FindOne(x => x.ScriptName == RoadZoneButton.SelectedItem.DisplayText);
                 
                 // Update
                 ActiveSegment.Zone = zone;
@@ -700,7 +794,7 @@ namespace LSFV.NativeUI
 
             // Set active road name
             ActiveRoad = road;
-            ActiveZone = WorldZone.GetZoneByName(zoneName);
+            ActiveZone = Locations.WorldZones.FindOne(x => x.ScriptName == zoneName);
 
             // Start a new segment
             AddOrUpdateSegment();
@@ -795,7 +889,7 @@ namespace LSFV.NativeUI
                         else
                         {
                             // Stop here
-                            RoadSaveButton_Activated(null, null);
+                            RoadEndButton_Activated(null, null);
                         }
                     }
 
@@ -816,7 +910,7 @@ namespace LSFV.NativeUI
                             else
                             {
                                 // Stop here
-                                RoadSaveButton_Activated(null, null);
+                                RoadEndButton_Activated(null, null);
                             }
                         }
                     }
@@ -853,6 +947,11 @@ namespace LSFV.NativeUI
                     }
                 }
             });
+        }
+
+        private void RecordEditSegment()
+        {
+            
         }
 
         /// <summary>
